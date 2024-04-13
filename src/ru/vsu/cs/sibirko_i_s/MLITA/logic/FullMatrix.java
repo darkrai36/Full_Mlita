@@ -3,8 +3,8 @@ package ru.vsu.cs.sibirko_i_s.MLITA.logic;
 import java.util.Random;
 
 public class FullMatrix {
-    public final int height;
-    public final int weight;
+    private int height;
+    private int weight;
     public int[][] matrix;
 
     public FullMatrix(int height, int weight) {
@@ -14,6 +14,20 @@ public class FullMatrix {
             matrix = new int[height][weight];
         } else {
             throw new NullPointerException("Matrix is empty, try again");
+        }
+    }
+
+    public int[][] buildSquareMatrix(FullMatrix object) {
+        if (height <= 0 || weight <= 0 || height < weight - 1) {
+            throw new NullPointerException("Invalid matrix's parameters");
+        } else {
+            int[][] squareMatrix = new int[height][weight - 1];
+            for (int i = 0; i < object.matrix.length; i++) {
+                for (int j = 0; j < object.matrix[0].length - 1; j++) {
+                    squareMatrix[i][j] = object.matrix[i][j];
+                }
+            }
+            return squareMatrix;
         }
     }
 
