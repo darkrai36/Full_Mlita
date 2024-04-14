@@ -54,7 +54,7 @@ public class FullMatrix {
 
     /**
      * "Распечатыватель" матрицы
-     * @param matrix
+     * @param matrix основная матрица
      */
     public static void printMatrix(double[][] matrix) {
         System.out.println("Matrix: ");
@@ -80,8 +80,8 @@ public class FullMatrix {
 
     /**
      * Метод рекурсивного расчёта детерминанта по строке или столбцу
-     * @param squareMatrix
-     * @return
+     * @param squareMatrix квадратная матрица
+     * @return вызывает приватный метод для расчёта определителя
      */
     private static double determinant(double[][] squareMatrix) {
         long res = 0;
@@ -302,5 +302,52 @@ public class FullMatrix {
         double[][] freeValues = takeFreeValues(matrix);
         double[][] inverseMatrix = inverseMatrix(matrix);
         return find_Product_Of_Matrices(inverseMatrix, freeValues);
+    }
+
+    /**
+     * Метод Гаусса
+     * @param mainMatrix расширенная матрица
+     * @return решения системы
+     */
+    public static double[] solveEquations2(double[][] mainMatrix) {
+        int n = mainMatrix.length;
+
+        // Прямой ход метода Гаусса
+        for (int i = 0; i < n; i++) {
+            // Находим максимальный элемент в столбце под главным элементом
+            int maxRow = i;
+            for (int k = i + 1; k < n; k++) {
+                if (Math.abs(mainMatrix[k][i]) > Math.abs(mainMatrix[maxRow][i])) {
+                    maxRow = k;
+                }
+            }
+
+            // Меняем строки, чтобы главный элемент был на диагонали
+            double[] temp = mainMatrix[i];
+            mainMatrix[i] = mainMatrix[maxRow];
+            mainMatrix[maxRow] = temp;
+
+            // Обнуляем нижние элементы под главным элементом
+            for (int k = i + 1; k < n; k++) {
+                double factor = -mainMatrix[k][i] / mainMatrix[i][i];
+                for (int j = i; j < n + 1; j++) {
+                    if (i == j) {
+                        mainMatrix[k][j] = 0;
+                    } else {
+                        mainMatrix[k][j] += factor * mainMatrix[i][j];
+                    }
+                }
+            }
+        }
+
+        // Обратный ход метода Гаусса
+        double[] solution = new double[n];
+        for (int i = n - 1; i >= 0; i--) {
+            solution[i] = mainMatrix[i][n] / mainMatrix[i][i];
+            for (int k = i - 1; k >= 0; k--) {
+                mainMatrix[k][n] -= mainMatrix[k][i] * solution[i];
+            }
+        }
+        return solution;
     }
 }
