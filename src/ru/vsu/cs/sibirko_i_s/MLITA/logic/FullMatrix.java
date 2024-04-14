@@ -27,6 +27,19 @@ public class FullMatrix {
     }
 
     /**
+     * Приватный метод для отбора свободных членов системы
+     * @param matrix исходная матрица
+     * @return массив, состоящий из свободных членов в виде матрицы (n*1), где n - количество строк исходной матрицы
+     */
+    private static double[][] takeFreeValues(double[][] matrix) {
+        double[][] res = new double[matrix.length][1];
+        for (int i = 0; i < matrix.length; i++) {
+            res[i][0] = matrix[i][matrix[0].length - 1];
+        }
+        return res;
+    }
+
+    /**
      * Метод для рандомного заполнения матрицы
      * @param matrix пустая матрица
      */
@@ -171,5 +184,123 @@ public class FullMatrix {
             }
         }
         return res;
+    }
+
+    /**
+     * Метод для поиска обратной матрицы (если определитель не равен нулю и матрица квадратная)
+     * @param mainMatrix основная матрица
+     * @return вызывает приватный метод для построения обратной матрицы, если выполняются условия её существования
+     */
+    public static double[][] findInverseMatrix(double[][] mainMatrix) {
+        if (mainMatrix.length != mainMatrix[0].length) {
+            throw new IllegalArgumentException("Main matrix must be square.");
+        }
+        if (calculateDeterminant(mainMatrix) == 0) {
+            throw new IllegalArgumentException("Determinant equals 0, so we can't find inverse matrix.");
+        }
+        return inverseMatrix(mainMatrix);
+    }
+
+    /**
+     * Приватный метод для нахождения обратной матрицы
+     * @param mainMatrix основная матрица
+     * @return обратную матрицу
+     */
+    private static double[][] inverseMatrix(double[][] mainMatrix) {
+        double determinant = calculateDeterminant(mainMatrix);
+        double[][] res = new double[mainMatrix.length][mainMatrix[0].length - 1];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res[0].length; j++) {
+                res[i][j] = (1/determinant) * transposedMatrix(buildMatrixWithAlgebraicComplements(mainMatrix))[i][j];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Метод построения матрицы для нахождения алгебраического дополнения
+     * @param mainMatrix основная матрица
+     * @param rowToRemove зачеркиваемая строка
+     * @param colToRemove зачеркиваемый столбец
+     * @return вспомогательная матрица (как при нахождении определителя)
+     */
+    private static double[][] buildMatrixForAlgebraicComplements(double[][] mainMatrix, int rowToRemove, int colToRemove) {
+        double[][] res = new double[mainMatrix.length - 1][mainMatrix[0].length - 1];
+        int newRow = 0;
+        int newCol = 0;
+
+        for (int i = 0; i < mainMatrix.length; i++) {
+            if (i == rowToRemove) {
+                continue;
+            }
+            for (int j = 0; j < mainMatrix[0].length; j++) {
+                if (j == colToRemove) {
+                    continue;
+                }
+                res[newRow][newCol] = mainMatrix[i][j];
+                newCol++;
+            }
+            newRow++;
+            newCol = 0;
+        }
+        return res;
+    }
+
+    /**
+     * Метод построения матрицы из уже найденных алгебраических дополнений
+     * @param mainMatrix основная матрица
+     * @return матрица алгебраических дополнений
+     */
+    private static double[][] buildMatrixWithAlgebraicComplements(double[][] mainMatrix) {
+        double[][] res = new double[mainMatrix.length][mainMatrix[0].length];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res[0].length; j++) {
+                res[i][j] = Math.pow(-1, i + j) * calculateDeterminant(buildMatrixForAlgebraicComplements(mainMatrix, i, j));
+                if (res[i][j] == -0) {
+                    res[i][j] = 0;
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Метод для построения транспонированной матрицы
+     * @param matrix основная матрица
+     * @return транспонированная матрица
+     */
+    private static double[][] transposedMatrix(double[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        double[][] res = new double[cols][rows];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                res[j][i] = matrix[i][j];
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Метод для вызова приватного метода, который решает матрицу методом обратной матрицы. Присутствуют необходимые проверки
+     * @param mainMatrix основная матрица
+     * @return вызывает приватный метод для решения системы
+     */
+    public static double[][] methodOfInverseMatrix(double[][] mainMatrix) {
+        if (calculateDeterminant(mainMatrix) == 0) {
+            throw new NullPointerException("Equation hasn't solves.");
+        }
+        return findSolutionsWithInverseMatrix(mainMatrix);
+    }
+
+    /**
+     * Метод обратной матрицы
+     * @param matrix основная матрица
+     * @return решения системы линейных уравнений
+     */
+    private static double[][] findSolutionsWithInverseMatrix(double[][] matrix) {
+        double[][] freeValues = takeFreeValues(matrix);
+        double[][] inverseMatrix = inverseMatrix(matrix);
+        return find_Product_Of_Matrices(inverseMatrix, freeValues);
     }
 }
