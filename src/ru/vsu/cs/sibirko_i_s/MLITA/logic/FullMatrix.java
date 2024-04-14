@@ -175,10 +175,14 @@ public class FullMatrix {
      * @return произведение матриц
      */
     private static double[][] product_of_matrices(double[][] matrix1, double[][] matrix2) {
-        double[][] res = new double[matrix1.length][matrix2[0].length];
-        for (int i = 0; i < res.length; i++) {
-            for (int j = 0; j < res[0].length; j++) {
-                for (int k = 0; k < matrix2.length; k++) {
+        int rows1 = matrix1.length;
+        int cols1 = matrix1[0].length;
+        int cols2 = matrix2[0].length;
+
+        double[][] res = new double[rows1][cols2];
+        for (int i = 0; i < rows1; i++) {
+            for (int j = 0; j < cols2; j++) {
+                for (int k = 0; k < cols1; k++) {
                     res[i][j] += matrix1[i][k] * matrix2[k][j];
                 }
             }
@@ -195,10 +199,11 @@ public class FullMatrix {
         if (mainMatrix.length != mainMatrix[0].length) {
             throw new IllegalArgumentException("Main matrix must be square.");
         }
-        if (calculateDeterminant(mainMatrix) == 0) {
+        double determinant = calculateDeterminant(mainMatrix);
+        if (determinant == 0) {
             throw new IllegalArgumentException("Determinant equals 0, so we can't find inverse matrix.");
         }
-        return inverseMatrix(mainMatrix);
+        return inverseMatrix(mainMatrix, determinant);
     }
 
     /**
@@ -206,9 +211,8 @@ public class FullMatrix {
      * @param mainMatrix основная матрица
      * @return обратную матрицу
      */
-    private static double[][] inverseMatrix(double[][] mainMatrix) {
-        double determinant = calculateDeterminant(mainMatrix);
-        double[][] res = new double[mainMatrix.length][mainMatrix[0].length - 1];
+    private static double[][] inverseMatrix(double[][] mainMatrix, double determinant) {
+        double[][] res = new double[mainMatrix.length][mainMatrix[0].length];
         for (int i = 0; i < res.length; i++) {
             for (int j = 0; j < res[0].length; j++) {
                 res[i][j] = (1/determinant) * transposedMatrix(buildMatrixWithAlgebraicComplements(mainMatrix))[i][j];
@@ -300,7 +304,7 @@ public class FullMatrix {
      */
     private static double[][] findSolutionsWithInverseMatrix(double[][] matrix) {
         double[][] freeValues = takeFreeValues(matrix);
-        double[][] inverseMatrix = inverseMatrix(matrix);
+        double[][] inverseMatrix = inverseMatrix(buildSquareMatrix(matrix), calculateDeterminant(matrix));
         return find_Product_Of_Matrices(inverseMatrix, freeValues);
     }
 
