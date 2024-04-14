@@ -8,7 +8,7 @@ public class FullMatrix {
      * @param matrix расширенная матрица
      * @return квадратную матрицу
      */
-    public static int[][] buildSquareMatrix(int[][] matrix) {
+    public static double[][] buildSquareMatrix(double[][] matrix) {
         int height = matrix.length;
         int weight = matrix[0].length;
         if (height == 0 || weight == 0) {
@@ -16,7 +16,7 @@ public class FullMatrix {
         } else if (height != weight - 1) {
             throw new NullPointerException("Row's count must be = (col's count - 1)");
         } else {
-            int[][] squareMatrix = new int[height][weight - 1];
+            double[][] squareMatrix = new double[height][weight - 1];
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < weight - 1; j++) {
                     squareMatrix[i][j] = matrix[i][j];
@@ -30,7 +30,7 @@ public class FullMatrix {
      * Метод для рандомного заполнения матрицы
      * @param matrix пустая матрица
      */
-    public static void randomInput(int[][] matrix) {
+    public static void randomInput(double[][] matrix) {
         Random rnd = new Random();
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
@@ -43,7 +43,7 @@ public class FullMatrix {
      * "Распечатыватель" матрицы
      * @param matrix
      */
-    public static void printMatrix(int[][] matrix) {
+    public static void printMatrix(double[][] matrix) {
         System.out.println("Matrix: ");
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
@@ -58,7 +58,7 @@ public class FullMatrix {
      * @param matrix исходная матрица
      * @return скрытый метод для расчёта определителя
      */
-    public static long calculateDeterminant(int[][] matrix) {
+    public static double calculateDeterminant(double[][] matrix) {
         if (matrix.length == matrix[0].length - 1) {
             return determinant(buildSquareMatrix(matrix));
         }
@@ -70,7 +70,7 @@ public class FullMatrix {
      * @param squareMatrix
      * @return
      */
-    private static long determinant(int[][] squareMatrix) {
+    private static double determinant(double[][] squareMatrix) {
         long res = 0;
         int height = squareMatrix.length;
         if (height == 1) {
@@ -91,9 +91,9 @@ public class FullMatrix {
      * @param colToRemove столбец, который необходимо удалить
      * @return укороченная матрица
      */
-    private static int[][] buildNewMatrix(int[][] oldMatrix, int colToRemove) {
+    private static double[][] buildNewMatrix(double[][] oldMatrix, int colToRemove) {
         int n = oldMatrix.length - 1;
-        int[][] res = new int[n][n];
+        double[][] res = new double[n][n];
         int newCol = 0;
         for (int i = 1; i < oldMatrix.length; i++) {
             for (int j = 0; j < oldMatrix[0].length; j++) {
@@ -113,11 +113,11 @@ public class FullMatrix {
      * @param matrix исходная матрица
      * @return массив с корнями уравнения
      */
-    public static double[] findEquationSolutions(int[][] matrix) {
+    public static double[] findEquationSolutions(double[][] matrix) {
         double[] res = new double[matrix[0].length - 1];
-        long determinant = calculateDeterminant(matrix);
+        double determinant = calculateDeterminant(matrix);
         for (int i = 0; i < res.length; i++) {
-            res[i] = (double) calculateDeterminant(buildMatrixForSolutions(matrix, i)) / determinant;
+            res[i] = calculateDeterminant(buildMatrixForSolutions(matrix, i)) / determinant;
         }
         return res;
     }
@@ -128,14 +128,45 @@ public class FullMatrix {
      * @param colToSwap столбец для замены на последний столбец расширенной матрицы
      * @return матрицу для нахождения определителя определенного корня
      */
-    private static int[][] buildMatrixForSolutions(int[][] matrix, int colToSwap) {
-        int[][] res = new int[matrix.length][matrix[0].length - 1];
+    private static double[][] buildMatrixForSolutions(double[][] matrix, int colToSwap) {
+        double[][] res = new double[matrix.length][matrix[0].length - 1];
         for (int i = 0; i < res.length; i++) {
             for (int j = 0; j < res[0].length; j++) {
                 if (j == colToSwap) {
                     res[i][j] = matrix[i][matrix[0].length - 1];
                 } else {
                     res[i][j] = matrix[i][j];
+                }
+            }
+        }
+        return res;
+    }
+
+    /**
+     * Метод для нахождения произведения двух матриц
+     * @param matrix1 первая матрица
+     * @param matrix2 вторая матрица
+     * @return произведение
+     */
+    public static double[][] find_Product_Of_Matrices(double[][] matrix1, double[][] matrix2) {
+        if (matrix1[0].length != matrix2.length) {
+            throw new IllegalStateException("This action is impossible, your matrices are incorrect.");
+        }
+        return product_of_matrices(matrix1, matrix2);
+    }
+
+    /**
+     * Метод нахождения произведения матриц (заприваченный)
+     * @param matrix1 первая матрица
+     * @param matrix2 вторая матрица
+     * @return произведение матриц
+     */
+    private static double[][] product_of_matrices(double[][] matrix1, double[][] matrix2) {
+        double[][] res = new double[matrix1.length][matrix2[0].length];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res[0].length; j++) {
+                for (int k = 0; k < matrix2.length; k++) {
+                    res[i][j] += matrix1[i][k] * matrix2[k][j];
                 }
             }
         }
