@@ -107,4 +107,38 @@ public class FullMatrix {
         }
         return res;
     }
+
+    /**
+     * Метод для нахождения корней системы линейных уравнений (в простонародье метод Крамера)
+     * @param matrix исходная матрица
+     * @return массив с корнями уравнения
+     */
+    public static double[] findEquationSolutions(int[][] matrix) {
+        double[] res = new double[matrix[0].length - 1];
+        long determinant = calculateDeterminant(matrix);
+        for (int i = 0; i < res.length; i++) {
+            res[i] = (double) calculateDeterminant(buildMatrixForSolutions(matrix, i)) / determinant;
+        }
+        return res;
+    }
+
+    /**
+     * "Строитель" новой матрицы для нахождения определителя некоторого корня исходной матрицы
+     * @param matrix исходная матрица
+     * @param colToSwap столбец для замены на последний столбец расширенной матрицы
+     * @return матрицу для нахождения определителя определенного корня
+     */
+    private static int[][] buildMatrixForSolutions(int[][] matrix, int colToSwap) {
+        int[][] res = new int[matrix.length][matrix[0].length - 1];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res[0].length; j++) {
+                if (j == colToSwap) {
+                    res[i][j] = matrix[i][matrix[0].length - 1];
+                } else {
+                    res[i][j] = matrix[i][j];
+                }
+            }
+        }
+        return res;
+    }
 }
