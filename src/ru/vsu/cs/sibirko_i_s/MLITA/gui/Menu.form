@@ -5,9 +5,13 @@
     <constraints>
       <xy x="20" y="20" width="500" height="400"/>
     </constraints>
+<<<<<<< HEAD
     <properties>
       <preferredSize width="1000" height="750"/>
     </properties>
+=======
+    <properties/>
+>>>>>>> origin/main
     <border type="none"/>
     <children>
       <tabbedpane id="3c9a" binding="tabbedPane1" default-binding="true">
@@ -45,10 +49,14 @@
                 <children>
                   <component id="3372e" class="javax.swing.JTable" binding="tableInput">
                     <constraints/>
+<<<<<<< HEAD
                     <properties>
                       <maximumSize width="2147483647" height="2147483647"/>
                       <preferredSize width="500" height="230"/>
                     </properties>
+=======
+                    <properties/>
+>>>>>>> origin/main
                   </component>
                 </children>
               </scrollpane>
@@ -109,9 +117,13 @@
               </grid>
               <scrollpane id="56cdb">
                 <constraints>
+<<<<<<< HEAD
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="300" height="200"/>
                   </grid>
+=======
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+>>>>>>> origin/main
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -150,9 +162,13 @@
                   </vspacer>
                   <scrollpane id="a1f73">
                     <constraints>
+<<<<<<< HEAD
                       <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                         <preferred-size width="250" height="200"/>
                       </grid>
+=======
+                      <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+>>>>>>> origin/main
                     </constraints>
                     <properties/>
                     <border type="none"/>
@@ -259,9 +275,13 @@
               </scrollpane>
               <scrollpane id="fc7ae">
                 <constraints>
+<<<<<<< HEAD
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="300" height="200"/>
                   </grid>
+=======
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+>>>>>>> origin/main
                 </constraints>
                 <properties/>
                 <border type="none"/>
@@ -339,9 +359,13 @@
               </scrollpane>
               <scrollpane id="345eb">
                 <constraints>
+<<<<<<< HEAD
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
                     <preferred-size width="300" height="200"/>
                   </grid>
+=======
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+>>>>>>> origin/main
                 </constraints>
                 <properties/>
                 <border type="none"/>
