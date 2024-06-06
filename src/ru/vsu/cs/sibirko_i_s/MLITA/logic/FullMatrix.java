@@ -1,5 +1,10 @@
 package ru.vsu.cs.sibirko_i_s.MLITA.logic;
 
+import Jama.EigenvalueDecomposition;
+import Jama.Matrix;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class FullMatrix {
@@ -308,50 +313,99 @@ public class FullMatrix {
         return find_Product_Of_Matrices(inverseMatrix, freeValues);
     }
 
-    /**
-     * Метод Гаусса
-     * @param mainMatrix расширенная матрица
-     * @return решения системы
-     */
-    public static double[] solveEquations2(double[][] mainMatrix) {
-        int n = mainMatrix.length;
+    public static List<Double> solveGauss(double[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length - 1; // количество переменных
 
-        // Прямой ход метода Гаусса
-        for (int i = 0; i < n; i++) {
-            // Находим максимальный элемент в столбце под главным элементом
-            int maxRow = i;
-            for (int k = i + 1; k < n; k++) {
-                if (Math.abs(mainMatrix[k][i]) > Math.abs(mainMatrix[maxRow][i])) {
-                    maxRow = k;
+        List<Double> res = new ArrayList<>(m);
+        List<Integer> pivotColumns = new ArrayList<>();
+
+        // Заполняем результат нулями
+        for (int i = 0; i < m; i++) {
+            res.add(Double.NaN); // NaN обозначает свободную переменную
+        }
+
+        // Прямой ход
+        for (int i = 0, row = 0; i < m && row < n; i++) {
+            // Поиск максимального элемента для текущего столбца
+            int max = row;
+            for (int k = row + 1; k < n; k++) {
+                if (Math.abs(matrix[k][i]) > Math.abs(matrix[max][i])) {
+                    max = k;
                 }
             }
 
-            // Меняем строки, чтобы главный элемент был на диагонали
-            double[] temp = mainMatrix[i];
-            mainMatrix[i] = mainMatrix[maxRow];
-            mainMatrix[maxRow] = temp;
+            // Проверка на нулевой столбец
+            if (Math.abs(matrix[max][i]) <= 1e-10) {
+                continue;
+            }
 
-            // Обнуляем нижние элементы под главным элементом
-            for (int k = i + 1; k < n; k++) {
-                double factor = -mainMatrix[k][i] / mainMatrix[i][i];
-                for (int j = i; j < n + 1; j++) {
-                    if (i == j) {
-                        mainMatrix[k][j] = 0;
-                    } else {
-                        mainMatrix[k][j] += factor * mainMatrix[i][j];
-                    }
+            // Меняем строки местами
+            double[] temp = matrix[row];
+            matrix[row] = matrix[max];
+            matrix[max] = temp;
+
+            pivotColumns.add(i);
+
+            // Приводим строки ниже текущей к нулевому элементу в текущем столбце
+            for (int k = row + 1; k < n; k++) {
+                double factor = matrix[k][i] / matrix[row][i];
+                for (int j = i; j <= m; j++) {
+                    matrix[k][j] -= factor * matrix[row][j];
                 }
             }
+            row++;
         }
 
-        // Обратный ход метода Гаусса
-        double[] solution = new double[n];
-        for (int i = n - 1; i >= 0; i--) {
-            solution[i] = mainMatrix[i][n] / mainMatrix[i][i];
-            for (int k = i - 1; k >= 0; k--) {
-                mainMatrix[k][n] -= mainMatrix[k][i] * solution[i];
+        // Обратный ход
+        for (int i = pivotColumns.size() - 1; i >= 0; i--) {
+            int lead = pivotColumns.get(i);
+            double sum = 0.0;
+            for (int j = lead + 1; j < m; j++) {
+                if (!Double.isNaN(res.get(j))) {
+                    sum += matrix[i][j] * res.get(j);
+                }
             }
+            res.set(lead, (matrix[i][m] - sum) / matrix[i][lead]);
         }
-        return solution;
+
+        return res;
     }
+
+    public static void main(String[] args) {
+        Matrix matrix = new Matrix(10, 10);
+        Random random = new Random();
+
+        for(int i = 0; i < 10; i++)
+            for(int j = 0; j < 10 ; j++)
+                matrix.set(i, j, random.nextDouble());
+
+
+        EigenvalueDecomposition eig = matrix.eig();
+
+// Собственные вектора
+        Matrix v = eig.getV();
+        double[][] res = v.getArray();
+
+// Реальная часть собственных значений
+        double[] realEigenvalues = eig.getRealEigenvalues();
+
+// Мнимая часть собственных значений
+        double[] imagEigenvalues = eig.getImagEigenvalues();
+
+        System.out.println("Собственные вектора: ");
+        for (int i = 0; i < v.getArray().length; i++) {
+            System.out.println(res[i][0] + " ");
+        }
+        System.out.println("Реальная часть собственных значений");
+        for (int i = 0; i < realEigenvalues.length; i++) {
+            System.out.print(realEigenvalues[i] + " ");
+        }
+        System.out.println();
+        System.out.println("Мнимая часть собственных значений: ");
+        for (int i = 0; i < imagEigenvalues.length; i++) {
+            System.out.print(imagEigenvalues[i] + " ");
+        }
+    }
+
 }

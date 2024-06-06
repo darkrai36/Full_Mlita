@@ -11,6 +11,8 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Menu extends JFrame {
     private JPanel panelMain;
@@ -38,11 +40,11 @@ public class Menu extends JFrame {
     private JButton buttonLoad45;
     private JButton buttonGauss;
     private JTable tableInput6;
-    private JTable tableOutput6;
     private JButton buttonRandomFor6;
     private JButton buttonLoad6;
     private JButton buttonLoad31;
     private JButton buttonLoad32;
+    private JTextPane textPane6;
 
     private final JFileChooser fileChooserOpen;
 
@@ -63,7 +65,6 @@ public class Menu extends JFrame {
         JTableUtils.initJTableForArray(tableOutput45, 100, false, true, false, false);
 
         JTableUtils.initJTableForArray(tableInput6, 70, true, true, true, true);
-        JTableUtils.initJTableForArray(tableOutput6, 100, false, true, false, false);
 
         tableOutput.setEnabled(false);
         tableInput.setRowHeight(35);
@@ -78,9 +79,7 @@ public class Menu extends JFrame {
         tableInput45.setRowHeight(35);
         tableOutput45.setRowHeight(35);
 
-        tableOutput6.setEnabled(false);
         tableInput6.setRowHeight(35);
-        tableOutput6.setRowHeight(35);
 
         fileChooserOpen = new JFileChooser();
         fileChooserOpen.setCurrentDirectory(new File(Program.defaultFileDirectory));
@@ -234,8 +233,8 @@ public class Menu extends JFrame {
         buttonGauss.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput6);
-                double[] res = FullMatrix.solveEquations2(arr);
-                JTableUtils.writeArrayToJTable(tableOutput6, res);
+                List<Double> res = FullMatrix.solveGauss(arr);
+                textPane6.setText(res.toString());
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
             }
