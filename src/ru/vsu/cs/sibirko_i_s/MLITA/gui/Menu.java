@@ -233,7 +233,7 @@ public class Menu extends JFrame {
         buttonGauss.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput6);
-                List<Double> res = FullMatrix.solveGauss(arr);
+                List<Double> res = FullMatrix.solveWithGauss(arr);
                 textPane6.setText(res.toString());
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);

@@ -30,7 +30,53 @@ public class FullMatrix {
             return squareMatrix;
         }
     }
-
+    /**
+     * Метод для получения основной матрицы из расширенной
+     * @param mainMatrix - расширенная матрица
+     * @return основную матрицу
+     */
+    private static double[][] getSubMatrix(double[][] mainMatrix) {
+        int rowCount = mainMatrix.length;
+        int colCount = mainMatrix[0].length - 1;
+        double[][] res = new double[rowCount][colCount];
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                res[i][j] = mainMatrix[i][j];
+            }
+        }
+        return res;
+    }
+    /**
+     * Метод, проверяющий, является ли строка нулевой
+     * @param arr - собственно, сама строка
+     * @return true or false
+     */
+    private static boolean isNullRow(double[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Метод для приведения матрицы к верхнетреугольному виду
+     * @param mainMatrix расширенная матрица системы
+     */
+    private static void getTriangleType(double[][] mainMatrix) {
+        int size = mainMatrix.length;
+        for (int i = 0; i < size - 1; i++) {
+            for (int j = i + 1; j < size; j++) {
+                double requiredCoefficient = mainMatrix[j][i] / mainMatrix[i][i];
+                if (Double.isNaN(requiredCoefficient)) {
+                    break;
+                }
+                for (int k = 0; k < mainMatrix[0].length; k++) {
+                    mainMatrix[j][k] -= requiredCoefficient * mainMatrix[i][k];
+                }
+            }
+        }
+    }
     /**
      * Приватный метод для отбора свободных членов системы
      * @param matrix исходная матрица
@@ -69,6 +115,36 @@ public class FullMatrix {
             }
             System.out.println();
         }
+    }
+    /**
+     * Метод для нахождения ранга матрицы (приводит матрицу к верхнетреугольному виду с помощью элементарных преобразований)
+     * @param mainMatrix - расширенная матрица
+     * @return ранг матрицы
+     */
+    private static int getRank(double[][] mainMatrix) {
+        int rank = 0;
+        getTriangleType(mainMatrix);
+        for (double[] row : mainMatrix) {
+            if (!isNullRow(row)) {
+                rank++;
+            }
+        }
+        return rank;
+    }
+    /**
+     * Метод для удаления нулевых строк в матрице
+     * @param count - количество удаляемых строк
+     * @param matrix матрица
+     * @return матрицу без нулевых строк
+     */
+    private static double[][] deleteRows(int count, double[][] matrix) {
+        double[][] res = new double[matrix.length - count][matrix[0].length];
+        for (int i = 0; i < res.length; i++) {
+            for (int j = 0; j < res[0].length; j++) {
+                res[i][j] = matrix[i][j];
+            }
+        }
+        return res;
     }
 
     /**
@@ -309,67 +385,46 @@ public class FullMatrix {
         return find_Product_Of_Matrices(inverseMatrix, freeValues);
     }
 
-    public static List<Double> solveGauss(double[][] matrix) {
-        int n = matrix.length;
-        int m = matrix[0].length - 1; // количество переменных
-
-        List<Double> res = new ArrayList<>(m);
-        List<Integer> pivotColumns = new ArrayList<>();
-
-        // Заполняем результат нулями
-        for (int i = 0; i < m; i++) {
-            res.add(Double.NaN); // NaN обозначает свободную переменную
+    /**
+     * Метод для поиска решений СЛУ методом Гаусса
+     * @param mainMatrix - расширенная матрица системы
+     * @return решения системы
+     */
+    public static List<Double> solveWithGauss(double[][] mainMatrix) throws Exception {
+        List<Double> res = new ArrayList<>();
+        double[][] subMatrix = getSubMatrix(mainMatrix);
+        int rankMain = getRank(mainMatrix);
+        int rankSub = getRank(subMatrix);
+        if (rankSub == rankMain && rankSub == subMatrix[0].length) {
+            return findEquations(mainMatrix).reversed();
+        } else if (rankSub != rankMain) { //Уравнение не имеет ни одного решения
+            return res;
         }
+        //Случай, когда уравнение имеет бесконечно много решений
+        ArrayList<String> temp = new ArrayList<>();
 
-        // Прямой ход
-        for (int i = 0, row = 0; i < m && row < n; i++) {
-            // Поиск максимального элемента для текущего столбца
-            int max = row;
-            for (int k = row + 1; k < n; k++) {
-                if (Math.abs(matrix[k][i]) > Math.abs(matrix[max][i])) {
-                    max = k;
-                }
-            }
+    }
 
-            // Проверка на нулевой столбец
-            if (Math.abs(matrix[max][i]) <= 1e-10) {
-                continue;
-            }
 
-            // Меняем строки местами
-            double[] temp = matrix[row];
-            matrix[row] = matrix[max];
-            matrix[max] = temp;
-
-            pivotColumns.add(i);
-
-            // Приводим строки ниже текущей к нулевому элементу в текущем столбце
-            for (int k = row + 1; k < n; k++) {
-                double factor = matrix[k][i] / matrix[row][i];
-                for (int j = i; j <= m; j++) {
-                    matrix[k][j] -= factor * matrix[row][j];
-                }
-            }
-            row++;
+    private static List<Double> findEquations(double[][] matrix) {
+        List<Double> res = new ArrayList<>();
+        res.add(matrix[matrix.length - 1][matrix[0].length - 1] / matrix[matrix.length - 1][matrix[0].length - 2]);
+        for (int i = matrix.length - 2; i >= 0; i--) {
+            double sum_of_free = getSumOfFreeCoefficients(matrix, i, res);
+            res.add(sum_of_free / matrix[i][i]);
         }
-
-        // Обратный ход
-        for (int i = pivotColumns.size() - 1; i >= 0; i--) {
-            int lead = pivotColumns.get(i);
-            double sum = 0.0;
-            for (int j = lead + 1; j < m; j++) {
-                if (!Double.isNaN(res.get(j))) {
-                    sum += matrix[i][j] * res.get(j);
-                }
-            }
-            res.set(lead, (matrix[i][m] - sum) / matrix[i][lead]);
+        return res;
+    }
+    private static double getSumOfFreeCoefficients(double[][] matrix, int rowNumber, List<Double> equations) {
+        double res = matrix[rowNumber][matrix[0].length - 1];
+        for (int j = matrix[0].length - 2; j > rowNumber; j--) {
+            res -= matrix[rowNumber][j] * equations.get(matrix[0].length - 2 - j);
         }
-
         return res;
     }
 
-    public static void main(String[] args) {
-        Matrix matrix = new Matrix(10, 10);
+    public static void main(String[] args) throws Exception {
+        /*Matrix matrix = new Matrix(10, 10);
         Random random = new Random();
 
         for(int i = 0; i < 10; i++)
@@ -401,7 +456,11 @@ public class FullMatrix {
         System.out.println("Мнимая часть собственных значений: ");
         for (int i = 0; i < imagEigenvalues.length; i++) {
             System.out.print(imagEigenvalues[i] + " ");
-        }
-    }
+        }*/
+        double[][] arr = {{1, -2, 0, 1, -3}, {3, -1, -2, 0, 1}, {2, 1, -2, -1, 4}, {1, 3, -2, -2, 7}};
+        /*double[][] arr = {{2, -1, -1, -3}, {1, -1, 2, 5}, {1, 1, 1, 6}};*/
+        /*double[][] arr = {{2, -3, 1, 7}, {3, 2, -1, 5}, {4, 7, -3, 4}};*/
 
+        solveWithGauss(arr);
+    }
 }
