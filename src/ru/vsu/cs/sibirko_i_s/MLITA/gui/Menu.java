@@ -232,9 +232,10 @@ public class Menu extends JFrame {
 
         buttonGauss.addActionListener(actionEvent -> {
             try {
-                double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput6);
-                List<Double> res = FullMatrix.solveWithGauss(arr);
-                textPane6.setText(res.toString());
+                double[][] matrix1 = JTableUtils.readDoubleMatrixFromJTable(tableInput6);
+                matrix1 = FullMatrix.nullsTriangle(matrix1);
+                String str = FullMatrix.MethodGaussa(matrix1);
+                textPane6.setText(str);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
             }

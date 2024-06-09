@@ -385,25 +385,20 @@ public class FullMatrix {
         return find_Product_Of_Matrices(inverseMatrix, freeValues);
     }
 
-    /**
-     * Метод для поиска решений СЛУ методом Гаусса
-     * @param mainMatrix - расширенная матрица системы
-     * @return решения системы
-     */
-    public static List<Double> solveWithGauss(double[][] mainMatrix) throws Exception {
-        List<Double> res = new ArrayList<>();
-        double[][] subMatrix = getSubMatrix(mainMatrix);
-        int rankMain = getRank(mainMatrix);
-        int rankSub = getRank(subMatrix);
-        if (rankSub == rankMain && rankSub == subMatrix[0].length) {
-            return findEquations(mainMatrix).reversed();
-        } else if (rankSub != rankMain) { //Уравнение не имеет ни одного решения
-            return res;
-        }
-        //Случай, когда уравнение имеет бесконечно много решений
-        ArrayList<String> temp = new ArrayList<>();
-
-    }
+//    /*public static List<Double> solveWithGauss(double[][] mainMatrix) throws Exception {
+//        List<Double> res = new ArrayList<>();
+//        double[][] subMatrix = getSubMatrix(mainMatrix);
+//        int rankMain = getRank(mainMatrix);
+//        int rankSub = getRank(subMatrix);
+//        if (rankSub == rankMain && rankSub == subMatrix[0].length) {
+//            return findEquations(mainMatrix).reversed();
+//        } else if (rankSub != rankMain) { //Уравнение не имеет ни одного решения
+//            return res;
+//        }
+//        //Случай, когда уравнение имеет бесконечно много решений
+//        ArrayList<String> temp = new ArrayList<>();
+//
+//    }*/
 
 
     private static List<Double> findEquations(double[][] matrix) {
@@ -421,6 +416,78 @@ public class FullMatrix {
             res -= matrix[rowNumber][j] * equations.get(matrix[0].length - 2 - j);
         }
         return res;
+    }
+
+    public static double[][] nullsTriangle(double[][] matrix){
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        for (int col = 0; col < cols; col++){
+            for (int row = col + 1; row < rows; row++){
+                if (matrix[col][col] != 0) {
+                    double k = - (matrix[row][col] / matrix[col][col]);
+                    matrix = subtraction(matrix, row, k, col);
+                }
+            }
+        }
+        return matrix;
+    }
+    public static double[][] subtraction(double[][] matrix, int r, double k, int col1){
+        for (int col = 0; col < matrix[0].length; col++){
+            matrix[r][col] += k * matrix[col1][col];
+        }
+        return matrix;
+    }
+
+    public static double[][] rootsByGauss(double[][] matrix) {
+        int freeXs = getFreeVariables(matrix);
+        int bazisXs = matrix.length - freeXs;
+        double[][] roots = new double[bazisXs][freeXs + 1];
+        for (int row = bazisXs - 1; row >= 0; row--) {
+            roots[row][0] = matrix[row][matrix[0].length - 1] / matrix[row][row];
+            for (int dob = matrix.length - 1 - freeXs; dob > row; dob--) {
+                roots[row][0] += (-matrix[row][dob] * roots[dob][0]) / matrix[row][row];
+            }
+            for (int i = 1; i < roots[0].length; i++) {
+                roots[row][i] = -matrix[row][bazisXs - 1 + i] / matrix[row][row];
+                for (int dob = matrix.length - 1 - freeXs; dob > row; dob--) {
+                    roots[row][i] += (-matrix[row][dob] * roots[dob][i]) / matrix[row][row];
+                }
+            }
+        }
+        return roots;
+    }
+    public static String MethodGaussa(double[][] matrix) {
+        int fv = getFreeVariables(matrix);
+        int bv = matrix.length - fv;
+        String result;
+        StringBuilder line = new StringBuilder();
+        double[][] roots2 = rootsByGauss(matrix);
+        for (int row = 0; row < roots2.length; row++) {
+            line.append("X" + (row + 1) + " = " + String.format("%.3f", roots2[row][0]));
+            for (int col = 1; col < roots2[0].length; col++) {
+                line.append(" + (" + String.format("%.3f", roots2[row][col]) + ")*X" + (col + bv));
+            }
+            line.append("\n");
+        }
+        result = line.toString();
+        return result;
+    }
+    public static int getFreeVariables(double[][] matrix) { //свободные переменные
+        int freeVariable = matrix.length;
+        for (int row = matrix.length - 1; row >= 0; row--) {
+            if (rowOfZeros(matrix[row])) {
+                freeVariable = row;
+            }
+        }
+        return matrix.length - freeVariable;
+    }
+    public static boolean rowOfZeros(double[] row) {
+        for (double element : row) {
+            if (element != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void main(String[] args) throws Exception {
@@ -460,7 +527,5 @@ public class FullMatrix {
         double[][] arr = {{1, -2, 0, 1, -3}, {3, -1, -2, 0, 1}, {2, 1, -2, -1, 4}, {1, 3, -2, -2, 7}};
         /*double[][] arr = {{2, -1, -1, -3}, {1, -1, 2, 5}, {1, 1, 1, 6}};*/
         /*double[][] arr = {{2, -3, 1, 7}, {3, 2, -1, 5}, {4, 7, -3, 4}};*/
-
-        solveWithGauss(arr);
     }
 }
