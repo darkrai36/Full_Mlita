@@ -25,7 +25,7 @@
           <grid id="12b4e" binding="panel12" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="5" left="5" bottom="5" right="5"/>
             <constraints>
-              <tabbedpane title="Tasks 1 &amp; 2 "/>
+              <tabbedpane title="Определитель и метод Крамера"/>
             </constraints>
             <properties>
               <font name="Arial" size="14"/>
@@ -120,7 +120,7 @@
           <grid id="b335b" binding="panel3" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="10" left="10" bottom="10" right="10"/>
             <constraints>
-              <tabbedpane title="Task 3"/>
+              <tabbedpane title="Матричное произведение"/>
             </constraints>
             <properties>
               <minimumSize width="362" height="149"/>
@@ -227,7 +227,7 @@
           <grid id="98215" binding="panel45" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="5" left="5" bottom="5" right="5"/>
             <constraints>
-              <tabbedpane title="Tasks 4-5"/>
+              <tabbedpane title="Обратная матрица и метод обратной матрицы"/>
             </constraints>
             <properties>
               <minimumSize width="346" height="194"/>
@@ -305,7 +305,7 @@
           <grid id="f1654" binding="panel6" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="5" left="5" bottom="5" right="5"/>
             <constraints>
-              <tabbedpane title="Task 6"/>
+              <tabbedpane title="Метод Гаусса"/>
             </constraints>
             <properties>
               <minimumSize width="-1" height="-1"/>

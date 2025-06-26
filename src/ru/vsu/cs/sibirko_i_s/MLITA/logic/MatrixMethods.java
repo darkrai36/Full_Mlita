@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class FullMatrix {
+public class MatrixMethods {
     /**
      * Method for obtaining a square matrix from an augmented one
      * @param matrix an augmented matrix

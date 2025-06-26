@@ -1,6 +1,6 @@
 package ru.vsu.cs.sibirko_i_s.MLITA.gui;
 
-import ru.vsu.cs.sibirko_i_s.MLITA.logic.FullMatrix;
+import ru.vsu.cs.sibirko_i_s.MLITA.logic.MatrixMethods;
 import ru.vsu.cs.sibirko_i_s.MLITA.logic.Program;
 import ru.vsu.cs.sibirko_i_s.MLITA.util.ArrayUtils;
 import ru.vsu.cs.sibirko_i_s.MLITA.util.JTableUtils;
@@ -11,8 +11,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Menu extends JFrame {
     private JPanel panelMain;
@@ -127,7 +125,7 @@ public class Menu extends JFrame {
         buttonFindDeterminant.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput);
-                double result = FullMatrix.calculateDeterminant(arr);
+                double result = MatrixMethods.calculateDeterminant(arr);
                 double[] result1 = new double[1];
                 result1[0] = result;
                 JTableUtils.writeArrayToJTable(tableOutput, result1);
@@ -139,7 +137,7 @@ public class Menu extends JFrame {
         buttonCrammer.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput);
-                double[] res = FullMatrix.findEquationSolutions(arr);
+                double[] res = MatrixMethods.findEquationSolutions(arr);
                 JTableUtils.writeArrayToJTable(tableOutput, res);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
@@ -172,7 +170,7 @@ public class Menu extends JFrame {
             try {
                 double[][] matrix1 = JTableUtils.readDoubleMatrixFromJTable(tableInput31);
                 double[][] matrix2 = JTableUtils.readDoubleMatrixFromJTable(tableInput32);
-                double[][] res = FullMatrix.find_Product_Of_Matrices(matrix1, matrix2);
+                double[][] res = MatrixMethods.findProductOfMatrices(matrix1, matrix2);
                 JTableUtils.writeArrayToJTable(tableOutput3, res);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
@@ -182,7 +180,7 @@ public class Menu extends JFrame {
         buttonSolve4.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput45);
-                double[][] res = FullMatrix.findInverseMatrix(arr);
+                double[][] res = MatrixMethods.findInverseMatrix(arr);
                 JTableUtils.writeArrayToJTable(tableOutput45, res);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
@@ -192,7 +190,7 @@ public class Menu extends JFrame {
         buttonSolve5.addActionListener(actionEvent -> {
             try {
                 double[][] arr = JTableUtils.readDoubleMatrixFromJTable(tableInput45);
-                double[][] res = FullMatrix.methodOfInverseMatrix(arr);
+                double[][] res = MatrixMethods.methodOfInverseMatrix(arr);
                 JTableUtils.writeArrayToJTable(tableOutput45, res);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
@@ -233,8 +231,8 @@ public class Menu extends JFrame {
         buttonGauss.addActionListener(actionEvent -> {
             try {
                 double[][] matrix1 = JTableUtils.readDoubleMatrixFromJTable(tableInput6);
-                matrix1 = FullMatrix.nullsTriangle(matrix1);
-                String str = FullMatrix.MethodGaussa(matrix1);
+                matrix1 = MatrixMethods.nullsTriangle(matrix1);
+                String str = MatrixMethods.MethodGaussa(matrix1);
                 textPane6.setText(str);
             } catch (Exception e) {
                 SwingUtils.showErrorMessageBox(e);
