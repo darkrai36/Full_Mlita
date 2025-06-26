@@ -14,28 +14,29 @@ public class Program {
     public static String defaultFileDirectory = "./Tests/";
 
     public static void main(String[] args) {
-        try {
-            Locale.setDefault(Locale.ROOT);
-
-            Options options = defaultOptions();
-
-            CmdParams params = parseArgs(options, args);
-
-            if (params.help) {
-                String usage = "[-w] or [-i <input-file> (-o <output-file>)]";
-                new HelpFormatter().printHelp(usage, options);
-                System.exit(0);
-            }
-
-            if (params.window) {
-                winMain();
-            } else {
-                throw new Exception("No valid options used. Try \"--help\" for more information.");
-            }
-        } catch (Exception exception) {
-            System.err.println(exception.getMessage());
-            System.exit(1);
-        }
+//        try {
+//            Locale.setDefault(Locale.ROOT);
+//
+//            Options options = defaultOptions();
+//
+//            CmdParams params = parseArgs(options, args);
+//
+//            if (params.help) {
+//                String usage = "[-w] or [-i <input-file> (-o <output-file>)]";
+//                new HelpFormatter().printHelp(usage, options);
+//                System.exit(0);
+//            }
+//
+//            if (params.window) {
+//                winMain();
+//            } else {
+//                throw new Exception("No valid options used. Try \"--help\" for more information.");
+//            }
+//        } catch (Exception exception) {
+//            System.err.println(exception.getMessage());
+//            System.exit(1);
+//        }
+        winMain();
     }
 
     public static void winMain() {
