@@ -279,10 +279,11 @@ public class MatrixMethods {
         if (originalMatrix.length != originalMatrix[0].length) {
             throw new IllegalArgumentException("Main matrix must be square.");
         }
-        if (calculateDeterminant(originalMatrix) == 0) {
+        double determinant = calculateDeterminant(originalMatrix);
+        if (determinant == 0) {
             throw new IllegalArgumentException("Determinant equals 0, so we can't find inverse matrix.");
         }
-        return inverseMatrix(originalMatrix);
+        return inverseMatrix(originalMatrix, determinant);
     }
 
     /**
@@ -290,8 +291,7 @@ public class MatrixMethods {
      * @param originalMatrix an original matrix
      * @return an inverse matrix
      */
-    private static double[][] inverseMatrix(double[][] originalMatrix) {
-        double determinant = calculateDeterminant(originalMatrix);
+    private static double[][] inverseMatrix(double[][] originalMatrix, double determinant) {
         double[][] res = new double[originalMatrix.length][originalMatrix[0].length - 1];
         for (int i = 0; i < res.length; i++) {
             for (int j = 0; j < res[0].length; j++) {
@@ -384,7 +384,7 @@ public class MatrixMethods {
      */
     private static double[][] findSolutionsWithInverseMatrix(double[][] originalMatrix) {
         double[][] freeValues = takeFreeValues(originalMatrix);
-        double[][] inverseMatrix = inverseMatrix(originalMatrix);
+        double[][] inverseMatrix = findInverseMatrix(originalMatrix);
         return findProductOfMatrices(inverseMatrix, freeValues);
     }
 
